@@ -36,5 +36,10 @@ namespace Syncfiles
 			}
 
 		}
+
+		public string ToJson()
+		{
+			return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+		}
 	}
 }

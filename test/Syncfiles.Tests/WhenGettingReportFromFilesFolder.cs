@@ -16,12 +16,7 @@ namespace Syncfiles.Tests
 
 			var report = FileScanner.Scan("files");
 
-			Assert.Equal(SerializeReport(expectedReport), SerializeReport(report));
-		}
-
-		private string SerializeReport(Report report)
-		{
-			return Newtonsoft.Json.JsonConvert.SerializeObject(report);
+			Assert.Equal(expectedReport.ToJson(), report.ToJson());
 		}
 	}
 }

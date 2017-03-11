@@ -4,5 +4,10 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CoreCompat.Newtonsoft.Json">
+      <Version>9.0.2-beta001</Version>
+    </PackageReference>
+  </ItemGroup>
 
 </Project>
