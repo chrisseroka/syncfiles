@@ -11,14 +11,14 @@ namespace Syncfiles
 			return new Report(entries);
 		}
 
-		public static ReportFile GetEntryFromFile(string file)
+		private static ReportFile GetEntryFromFile(string file)
 		{
 			var fileInfo = new MediaFileInfo(file);
 			var result = new ReportFile(fileInfo.FilePath, fileInfo.Hash);
 			return result;
 		}
 
-		public static ReportFolder GetEntryFromDir(string folder)
+		private static ReportFolder GetEntryFromDir(string folder)
 		{
 			var entries = new List<IReportItem>();
 			var files = System.IO.Directory.EnumerateFiles(folder);

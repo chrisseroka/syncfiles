@@ -6,7 +6,13 @@ namespace Syncfiles
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+        	foreach(var arg in args)
+			{
+				Console.WriteLine($"arg: {arg}");
+			}
+
+        	var report = FileScanner.Scan(args[0]);
+			report.ToText();
         }
     }
 }

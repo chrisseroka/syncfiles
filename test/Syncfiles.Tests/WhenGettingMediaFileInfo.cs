@@ -23,4 +23,5 @@ namespace Syncfiles.Tests
 			Assert.True(fileInfo.FilePath.EndsWith("files\\dir\\IMG_6220.JPG"));
 		}
     }
+
 }

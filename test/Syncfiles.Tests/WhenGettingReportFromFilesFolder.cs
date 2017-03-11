@@ -8,9 +8,9 @@ namespace Syncfiles.Tests
 		public void ShouldGenerateReportCorrectly()
 		{
 			var expectedReport = new Report(
-						new ReportFile("IMG_6153.JPG", ""),
-						new ReportFolder("dir",
-							new ReportFile("IMG_6220.JPG", "")
+						new ReportFile("files\\IMG_6153.JPG", "d6d2ea3e769584404d0905a4325d7e16"),
+						new ReportFolder("files\\dir",
+							new ReportFile("files\\dir\\IMG_6220.JPG", "12fe13c3351f2db4531a9c00755c9676")
 							)
 					);
 
