@@ -28,7 +28,7 @@ namespace Syncfiles
 			}
 
 			this.FilePath = fileName;
-			this.CreationDate = new FileInfo(fileName).CreationTimeUtc;
+			this.CreationDate = new FileInfo(fileName).CreationTime;
 		}
 
 		public string Hash {get;set;}

@@ -6,10 +6,12 @@ namespace Syncfiles.Tests
     public class WhenGettingMediaFileInfo
     {
     	private MediaFileInfo fileInfo;
-    	
+    	private const string FilePath = ".\\files\\dir\\IMG_6220.JPG";
+
 		public WhenGettingMediaFileInfo()
 		{
-			this.fileInfo = new MediaFileInfo(".\\files\\dir\\IMG_6220.JPG");
+			System.IO.File.SetCreationTime(FilePath, new DateTime(2017, 3, 11));
+			this.fileInfo = new MediaFileInfo(FilePath);
 		}
 
         [Fact]
@@ -21,7 +23,7 @@ namespace Syncfiles.Tests
         [Fact]
         public void ShouldRetrieveFileName()
 		{
-			Assert.True(fileInfo.FilePath.EndsWith("files\\dir\\IMG_6220.JPG"));
+			Assert.True(fileInfo.FilePath.EndsWith(FilePath));
 		}
 
         [Fact]
