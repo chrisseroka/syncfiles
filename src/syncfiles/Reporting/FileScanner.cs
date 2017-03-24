@@ -15,7 +15,7 @@ namespace Syncfiles
 		private static ReportFile GetEntryFromFile(string file)
 		{
 			var fileInfo = new MediaFileInfo(file);
-			var result = new ReportFile(fileInfo.FilePath, fileInfo.Hash);
+			var result = new ReportFile(fileInfo.FilePath, fileInfo.Hash, fileInfo.CreationDate);
 			return result;
 		}
 

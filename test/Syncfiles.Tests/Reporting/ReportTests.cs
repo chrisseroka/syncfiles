@@ -9,8 +9,8 @@ namespace Syncfiles.Tests.Reporting
 		public void WhenFlatFileStructure_ShouldDumpReportToText()
 		{
 			var expectedReport = new Report(
-						new ReportFile("IMG_6153.JPG", "hash1"),
-						new ReportFile("image.png", "hash2")
+						new ReportFile("IMG_6153.JPG", "hash1", new DateTime(2017, 1, 2)),
+						new ReportFile("image.png", "hash2", new DateTime(2017, 1, 3))
 					);
 
 			var result = expectedReport.ToText();
