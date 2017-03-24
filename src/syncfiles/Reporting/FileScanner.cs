@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Syncfiles
 {
@@ -37,6 +38,11 @@ namespace Syncfiles
 			}
 			
 		    return new ReportFolder(folder, entries.ToArray());
+		}
+		
+		public static int GetFilesCount(string path)
+		{
+			return System.IO.Directory.EnumerateFileSystemEntries(path, "*", System.IO.SearchOption.AllDirectories).Count();
 		}
 	}
 }

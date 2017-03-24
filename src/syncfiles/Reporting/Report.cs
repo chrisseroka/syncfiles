@@ -30,11 +30,6 @@ namespace Syncfiles
 				var reportFile = (ReportFile)item;
 				sb.AppendLine($"{reportFile.Name}, #{reportFile.Hash}");
 			}
-			foreach(var childItem in this.Items)
-			{
-
-			}
-
 		}
 
 		public string ToJson()
