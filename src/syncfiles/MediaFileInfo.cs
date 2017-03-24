@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -23,13 +24,17 @@ namespace Syncfiles
 					}
 
 					this.Hash = sBuilder.ToString();
-					this.FilePath = fileName;
 				}
 			}
+
+			this.FilePath = fileName;
+			this.CreationDate = new FileInfo(fileName).CreationTimeUtc;
 		}
 
 		public string Hash {get;set;}
 
 		public string FilePath {get;set;}
+
+		public DateTime CreationDate {get;set;}
 	}
 }

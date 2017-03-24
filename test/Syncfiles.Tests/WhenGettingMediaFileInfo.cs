@@ -1,3 +1,4 @@
+using System;
 using Xunit;
 
 namespace Syncfiles.Tests
@@ -21,6 +22,12 @@ namespace Syncfiles.Tests
         public void ShouldRetrieveFileName()
 		{
 			Assert.True(fileInfo.FilePath.EndsWith("files\\dir\\IMG_6220.JPG"));
+		}
+
+        [Fact]
+        public void ShouldRetrieveCreationDate()
+		{
+			Assert.Equal(new DateTime(2017, 3, 11), fileInfo.CreationDate.Date);
 		}
     }
 
