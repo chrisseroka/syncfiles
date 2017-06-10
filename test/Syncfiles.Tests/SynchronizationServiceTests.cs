@@ -2,11 +2,13 @@ using System.IO;
 using System;
 using Xunit;
 using System.Globalization;
+using System.Linq;
 
 namespace Syncfiles.Tests
 {
    public class SynchronizationServiceTests
    {
+      private const string testMoveFileReportPath = "testMoveFileReportPath.txt";
       private const string testFilesDirectory = "syncFilesTestDir";
       private SynchronizationService service;
       private string outputFolder;
@@ -55,7 +57,116 @@ namespace Syncfiles.Tests
          Assert.Equal(Array.Empty<string>(), report);
       }
 
-      public string ReportLine(string inputFolder, string inputFile, string outputFolder, string outputFile)
+      [Fact]
+      public void ShouldReturnCorrectReportForSampleData()
+      {
+         this.PrepareMoveFilesReport(
+               @"C:\folder1\file1.jpg   ///-->///   C:\2017\folder1\file1.jpg" + Environment.NewLine +
+               @"C:\folder1\nestedfolder2\file2.jpg   ///-->///   C:\2017\folder1\nestedfolder2\file2.jpg"
+               );
+         var report = this.LoadMoveFilesReport();
+
+         Assert.Equal(@"C:\folder1\file1.jpg", report.Items.ElementAt(0).From);
+         Assert.Equal(@"C:\2017\folder1\file1.jpg", report.Items.ElementAt(0).To);
+
+         Assert.Equal(@"C:\folder1\nestedfolder2\file2.jpg", report.Items.ElementAt(1).From);
+         Assert.Equal(@"C:\2017\folder1\nestedfolder2\file2.jpg", report.Items.ElementAt(1).To);
+      }
+
+      [Fact]
+      public void ShouldTrimSpaces()
+      {
+         this.PrepareMoveFilesReport(
+               "     C:\\folder1\\file1.jpg   ///-->/// \t      C:\\2017\\folder1\\file1.jpg\t  \t"
+               );
+         var report = this.LoadMoveFilesReport();
+
+         Assert.Equal(@"C:\folder1\file1.jpg", report.Items.ElementAt(0).From);
+         Assert.Equal(@"C:\2017\folder1\file1.jpg", report.Items.ElementAt(0).To);
+      }
+
+      [Fact]
+      public void ShouldNotRequireSpacesNextToSeparator()
+      {
+         this.PrepareMoveFilesReport(
+               @"C:\folder1\file1.jpg///-->///C:\2017\folder1\file1.jpg"
+               );
+         var report = this.LoadMoveFilesReport();
+
+         Assert.Equal(@"C:\folder1\file1.jpg", report.Items.ElementAt(0).From);
+         Assert.Equal(@"C:\2017\folder1\file1.jpg", report.Items.ElementAt(0).To);
+      }
+
+      [Fact]
+      public void ShouldAcceptSpacesInFileNames()
+      {
+         this.PrepareMoveFilesReport(
+               @"C:\Program Files\some file with spaces .j pg///-->///C:\2017\Program Files\some file with spaces .j pg"
+               );
+         var report = this.LoadMoveFilesReport();
+
+         Assert.Equal(@"C:\Program Files\some file with spaces .j pg", report.Items.ElementAt(0).From);
+         Assert.Equal(@"C:\2017\Program Files\some file with spaces .j pg", report.Items.ElementAt(0).To);
+      }
+
+      [Fact]
+      public void ShouldFailIfThereIsNoSeparator()
+      {
+         this.PrepareMoveFilesReport(
+               @"C:\folder1\file1.jpg  C:\2017\folder1\file1.jpg"
+               );
+
+         var exception = Assert.Throws<InvalidOperationException>(() => this.LoadMoveFilesReport());
+         Assert.Equal("Line 0: Separator not found", exception.Message);
+      }
+
+      [Fact]
+      public void ShouldFailIfSeparatorIsIncorrect()
+      {
+         this.PrepareMoveFilesReport(
+               @"C:\folder1\file1.jpg ///helloworld/// C:\2017\folder1\file1.jpg"
+               );
+
+         var exception = Assert.Throws<InvalidOperationException>(() => this.LoadMoveFilesReport());
+         Assert.Equal("Line 0: Separator not found", exception.Message);
+      }
+
+      [Theory]
+      [InlineData("///-->/// C:\\2017\\folder1\\file1.jpg", "Line 0: '' file is invalid")]
+      [InlineData("C:\\folder1\\file1.jpg ///-->///", "Line 0: '' file is invalid")]
+      [InlineData("asdf:\\folder1\\file1.jpg ///-->///", "Line 0: 'asdf:\\folder1\\file1.jpg' file is invalid")]
+      [InlineData("asdf ///-->///", "Line 0: 'asdf' file is invalid")]
+      public void ShouldFailIfThereIsNoFromFile(string line, string exceptionMessage)
+      {
+         this.PrepareMoveFilesReport(line);
+
+         var exception = Assert.Throws<InvalidOperationException>(() => this.LoadMoveFilesReport());
+         Assert.Equal(exceptionMessage, exception.Message);
+      }
+
+      [Fact]
+      public void ShouldCountExceptionLineNumberCorrectly()
+      {
+         this.PrepareMoveFilesReport(
+               @"C:\folder1\file1.jpg ///-->/// C:\2017\folder1\file1.jpg" + Environment.NewLine +
+               @"C:\folder1\file1.jpg ///helloworld/// C:\2017\folder1\file1.jpg"
+               );
+
+         var exception = Assert.Throws<InvalidOperationException>(() => this.LoadMoveFilesReport());
+         Assert.Equal("Line 1: Separator not found", exception.Message);
+      }
+
+      private void PrepareMoveFilesReport(string rawContent)
+      {
+         System.IO.File.WriteAllText(testMoveFileReportPath, rawContent);
+      }
+
+      private MoveFilesReport LoadMoveFilesReport()
+      {
+         return this.service.LoadMoveFilesReport(testMoveFileReportPath);
+      }
+
+      private string ReportLine(string inputFolder, string inputFile, string outputFolder, string outputFile)
       {
             var inputFilePath = Path.Combine(inputFolder, inputFile);
             var outputFilePath = Path.Combine(outputFolder, outputFile);

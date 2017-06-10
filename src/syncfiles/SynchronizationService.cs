@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Syncfiles
@@ -24,10 +25,25 @@ namespace Syncfiles
          return result.ToArray();
       }
 
+      public MoveFilesReport LoadMoveFilesReport(string path)
+      {
+          return MoveFilesReport.Load(path);
+      }
+
+      public MoveFilesSummary MoveFiles(MoveFilesReport report)
+      {
+         throw new NotImplementedException();
+      }
+
       private string BuildReportLine(string inputFilePath, string outputFilePath)
       {
          return $"{inputFilePath}          ///-->///           {outputFilePath}";
       }
    }
 
+
+   public class MoveFilesSummary 
+   {
+
+   }
 }
