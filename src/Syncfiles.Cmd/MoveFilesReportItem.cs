@@ -1,4 +1,4 @@
-namespace Syncfiles
+namespace Syncfiles.Cmd
 {
     public class MoveFilesReportItem 
     {

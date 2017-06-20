@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syncfiles
+namespace Syncfiles.Cmd
 {
     class Program
     {

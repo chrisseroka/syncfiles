@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Syncfiles
+namespace Syncfiles.Cmd
 {
    public class SynchronizationService 
    {

@@ -9,7 +9,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0-beta5-build1225" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Syncfiles\Syncfiles.csproj" />
+    <ProjectReference Include="..\..\src\Syncfiles.Cmd\Syncfiles.Cmd.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="files\**\*">

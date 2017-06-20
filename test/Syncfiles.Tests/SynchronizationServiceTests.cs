@@ -3,6 +3,7 @@ using System;
 using Xunit;
 using System.Globalization;
 using System.Linq;
+using Syncfiles.Cmd;
 
 namespace Syncfiles.Tests
 {
