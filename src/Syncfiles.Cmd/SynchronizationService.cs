@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using MetadataExtractor;
 
 namespace Syncfiles.Cmd
 {
@@ -12,7 +15,7 @@ namespace Syncfiles.Cmd
          var outputFolderPath = new System.IO.DirectoryInfo(outputFolder).FullName;
          foreach(var fileName in files)
          {
-            var creationDate = System.IO.File.GetCreationTime(fileName);
+             var creationDate = ReadDateTaken(fileName);
             var relativePath = fileName.Replace(inputFolder + "\\", "");
             var creationYear = creationDate.Year.ToString();
             var creationMonth = creationDate.Month.ToString("D2");
@@ -24,6 +27,15 @@ namespace Syncfiles.Cmd
 
          return result.ToArray();
       }
+
+        private DateTime ReadDateTaken(string fileName)
+        {
+            if (fileName.ToLowerInvariant().EndsWith("jpg"))
+            {
+                var metadata = ImageMetadataReader.ReadMetadata(fileName).ToList();
+            }
+            return System.IO.File.GetLastWriteTime(fileName);
+        }
 
       public MoveFilesReport LoadMoveFilesReport(string path)
       {

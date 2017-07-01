@@ -2,3 +2,6 @@
 *.swp
 **/bin
 **/obj
+**/.suo
+.vs/
+report*.txt

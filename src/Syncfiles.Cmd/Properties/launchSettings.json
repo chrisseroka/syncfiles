@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Syncfiles.Cmd": {
+      "commandName": "Project",
+      "commandLineArgs": "-i \"c:\\my\\New folder\" -o \"c:\\my\\output\""
+    }
+  }
+}
