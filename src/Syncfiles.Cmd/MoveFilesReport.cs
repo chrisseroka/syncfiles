@@ -53,7 +53,7 @@ namespace Syncfiles.Cmd
 
             var pathTokens = path.Split('\\', '/').Skip(1);
             if (pathTokens.Any(token => token.Any(character => InvalidPathCharacters.Contains(character))))
-            { 
+            {
                 ThrowInvalidFileException(path, lineNumber);
             }
         }

@@ -17,16 +17,20 @@ namespace Syncfiles.Cmd
 
         public static int ParseCommand(string[] args)
         {
-            var res = ImageMetadataReader.ReadMetadata(@"C:\my\New folder\aparat 2016-07-29\DCIM\100CANON\IMG_6014.JPG").ToList();
+            var res = ImageMetadataReader.ReadMetadata(@"C:\my\New folder\aparat 2016-07-29\DCIM\100CANON\IMG_6014.JPG")
+                .ToList();
             var datetime = res.OfType<ExifIfd0Directory>().FirstOrDefault()?.GetDateTime(306);
             var app = new CommandLineApplication();
 
             app.Command("scan", config =>
             {
                 config.Description = "Scan filesystem and suggest to move files to proper folders";
-                var inputLocation = config.Option("-i | --input <DIR>", "Input directory where the file scanning starts", CommandOptionType.SingleValue);
-                var outputLocation = config.Option("-o | --output <DIR>", "Output directory where the files should be moved", CommandOptionType.SingleValue);
-                var reportFilename = config.Option("-r | --reportPath <DIR>", "Synchronization report file path", CommandOptionType.SingleValue);
+                var inputLocation = config.Option("-i | --input <DIR>",
+                    "Input directory where the file scanning starts", CommandOptionType.SingleValue);
+                var outputLocation = config.Option("-o | --output <DIR>",
+                    "Output directory where the files should be moved", CommandOptionType.SingleValue);
+                var reportFilename = config.Option("-r | --reportPath <DIR>", "Synchronization report file path",
+                    CommandOptionType.SingleValue);
                 ConfigureHelp(config);
                 config.OnExecute(() =>
                 {
@@ -48,7 +52,8 @@ namespace Syncfiles.Cmd
 
                     Console.WriteLine("Report: " + reportPath);
                     var synchronizationService = new SynchronizationService();
-                    var result = synchronizationService.GenerateMoveFilesReport(inputLocation.Value(), outputLocation.Value());
+                    var result =
+                        synchronizationService.GenerateMoveFilesReport(inputLocation.Value(), outputLocation.Value());
                     System.IO.File.WriteAllLines(reportPath, result);
                     return 0;
                 });
@@ -56,7 +61,8 @@ namespace Syncfiles.Cmd
             app.Command("move", config =>
             {
                 config.Description = "Move files based on given report (report is generated with 'scan' option)";
-                var reportFilename = config.Option("-r | --reportPath <DIR>", "Synchronization report file path", CommandOptionType.SingleValue);
+                var reportFilename = config.Option("-r | --reportPath <DIR>", "Synchronization report file path",
+                    CommandOptionType.SingleValue);
                 ConfigureHelp(config);
                 config.OnExecute(() =>
                 {
