@@ -146,6 +146,57 @@ namespace Syncfiles.Tests
       }
 
       [Fact]
+      public void ShouldScanMediaFiles()
+      {
+         //ARRANGE
+          var files = new[]
+          {
+              "image1.jpg",
+              "image2.3gp",
+              "image3.mov",
+              "image4.MOV",
+              "image5.JPEG",
+              "image6.mp4",
+              "image6.avi",
+              "image6.bmp",
+          };
+            foreach (var file in files)
+            {
+                 TouchFile(inputFolder, file, "2015-01-23");
+            }
+
+         //ACT
+         var report = this.service.GenerateMoveFilesReport(inputFolder, outputFolder);
+
+         //ASSERT
+         Assert.Equal(report.Length, files.Length);
+      }
+
+      [Fact]
+      public void ShouldSkipOtherFiles()
+      {
+         //ARRANGE
+          var files = new[]
+          {
+              ".ini",
+              ".exe",
+              ".mp3",
+              ".jpg~",
+              ".jpg.bak"
+          };
+            foreach (var file in files)
+            {
+                 TouchFile(inputFolder, file, "2015-01-23");
+            }
+
+         //ACT
+         var report = this.service.GenerateMoveFilesReport(inputFolder, outputFolder);
+
+         //ASSERT
+         Assert.Equal(Array.Empty<string>(), report);
+      }
+
+      [Fact]
       public void ShouldCountExceptionLineNumberCorrectly()
       {
          this.PrepareMoveFilesReport(

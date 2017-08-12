@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using MetadataExtractor;
+using MetadataExtractor.Formats.Exif;
 using Microsoft.Extensions.CommandLineUtils;
 
 namespace Syncfiles.Cmd
@@ -9,6 +10,7 @@ namespace Syncfiles.Cmd
     {
         public static void Main(string[] args)
         {
+            //var result = ParseCommand(new [] { "scan", "-i",@"c:\my\New folder", "-o", @"c:\my\output"});
             var result = ParseCommand(args);
             Environment.Exit(result);
         }
@@ -16,6 +18,7 @@ namespace Syncfiles.Cmd
         public static int ParseCommand(string[] args)
         {
             var res = ImageMetadataReader.ReadMetadata(@"C:\my\New folder\aparat 2016-07-29\DCIM\100CANON\IMG_6014.JPG").ToList();
+            var datetime = res.OfType<ExifIfd0Directory>().FirstOrDefault()?.GetDateTime(306);
             var app = new CommandLineApplication();
 
             app.Command("scan", config =>
@@ -43,9 +46,31 @@ namespace Syncfiles.Cmd
                         ? reportFilename.Value()
                         : $"report_{DateTime.Now:yyyyMMddHHmmss}.txt";
 
+                    Console.WriteLine("Report: " + reportPath);
                     var synchronizationService = new SynchronizationService();
                     var result = synchronizationService.GenerateMoveFilesReport(inputLocation.Value(), outputLocation.Value());
                     System.IO.File.WriteAllLines(reportPath, result);
+                    return 0;
+                });
+            });
+            app.Command("move", config =>
+            {
+                config.Description = "Move files based on given report (report is generated with 'scan' option)";
+                var reportFilename = config.Option("-r | --reportPath <DIR>", "Synchronization report file path", CommandOptionType.SingleValue);
+                ConfigureHelp(config);
+                config.OnExecute(() =>
+                {
+                    if (reportFilename.HasValue() == false)
+                    {
+                        app.Out.WriteLine("You must specify reportFilename");
+                        return 1;
+                    }
+                    var report = MoveFilesReport.Load(reportFilename.Value());
+                    foreach (var item in report.Items)
+                    {
+                        Console.WriteLine($"{item.To}");
+                    }
+
                     return 0;
                 });
             });

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using MetadataExtractor;
+using MetadataExtractor.Formats.Exif;
 
 namespace Syncfiles.Cmd
 {
@@ -15,6 +15,7 @@ namespace Syncfiles.Cmd
          var outputFolderPath = new System.IO.DirectoryInfo(outputFolder).FullName;
          foreach(var fileName in files)
          {
+            Console.WriteLine("path: " + fileName);
              var creationDate = ReadDateTaken(fileName);
             var relativePath = fileName.Replace(inputFolder + "\\", "");
             var creationYear = creationDate.Year.ToString();
@@ -32,30 +33,37 @@ namespace Syncfiles.Cmd
         {
             if (fileName.ToLowerInvariant().EndsWith("jpg"))
             {
-                var metadata = ImageMetadataReader.ReadMetadata(fileName).ToList();
+                var datetime = GetImageDateTakenProperty(fileName);
+                if (datetime != null)
+                {
+                    return datetime.Value;
+                }
             }
             return System.IO.File.GetLastWriteTime(fileName);
         }
+
+       private DateTime? GetImageDateTakenProperty(string path)
+       {
+            var metadata = ImageMetadataReader.ReadMetadata(path).ToList();
+           DateTime result;
+            if ((metadata.OfType<ExifIfd0Directory>().Any()
+                    && metadata.OfType<ExifIfd0Directory>().FirstOrDefault().TryGetDateTime(306, out result))
+                || (metadata.OfType<ExifSubIfdDirectory>().Any()
+                    && metadata.OfType<ExifSubIfdDirectory>().First().TryGetDateTime(36867, out result)))
+            {
+               return result;
+            }
+           return null;
+       }
 
       public MoveFilesReport LoadMoveFilesReport(string path)
       {
           return MoveFilesReport.Load(path);
       }
 
-      public MoveFilesSummary MoveFiles(MoveFilesReport report)
-      {
-         throw new NotImplementedException();
-      }
-
       private string BuildReportLine(string inputFilePath, string outputFilePath)
       {
          return $"{inputFilePath}          ///-->///           {outputFilePath}";
       }
-   }
-
-
-   public class MoveFilesSummary 
-   {
-
    }
 }
