@@ -11,8 +11,8 @@ namespace Syncfiles.Cmd
         // ReSharper disable once RedundantAssignment
         public static void Main(string[] args)
         {
-            args = new[] {"copy", "-s", @"c:\my\New Folder\tmp1", "-o", @"c:\my\syncfiles", "-r", "journal.csv"};
-            //args = new[] {"copy", "--nocopy", "-s", @"c:\my\New Folder\tmp1", "-o", @"c:\my\syncfiles", "-r", "journal.csv"};
+            //args = new[] {"copy", "-s", @"c:\my\New Folder", "-o", @"d:\sorted", "-r", "journal.csv"};
+            //args = new[] {"copy", "--nocopy", "-s", @"c:\my\New Folder", "-o", @"d:\sorted", "-r", "journal.csv"};
             //args = new[] {"getdate", "-f", @"C:\my\syncfiles\2016\12\02_IMG_5679.JPG"};
             var app = new CommandLineApplication();
             app.Command("copy", config =>
@@ -82,25 +82,6 @@ namespace Syncfiles.Cmd
         {
             config.HelpOption("-? | -h | --help");
         }
-        //---------------
-
-        //static void Main2(string[] args)
-        //{
-        //    var src = @"c:\my\New Folder\tmp1";
-        //    var dst = @"c:\my\syncfiles";
-        //    var journal = System.IO.Path.Combine(dst, "journal.csv");
-
-        //    //DebugPath(@"C:\my\syncfiles\2016\12\02_IMG_5679.JPG");
-
-        //    //GetRecords(src, journal);
-
-        //    //GetRecords(dst, journal);
-
-        //    CopyFilesFromSrcToDst(src, dst);
-
-        //    Console.WriteLine("Press any key to continue...");
-        //    Console.ReadKey();
-        //}
 
         private static void DebugPath(string path)
         {
